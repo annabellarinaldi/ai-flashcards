@@ -4,7 +4,10 @@ const {
     getFlashcard, 
     createFlashcard,
     deleteFlashcard,
-    updateFlashcard 
+    updateFlashcard,
+    getDueFlashcardsCount,
+    getNextReviewCard,
+    reviewFlashcard
 } = require('../controllers/flashcardController')
 const requireAuth = require('../middleware/requireAuth')
 
@@ -16,16 +19,25 @@ router.use(requireAuth)
 // GET all flashcards
 router.get('/', getFlashcards)
 
+// GET count of due flashcards
+router.get('/due-count', getDueFlashcardsCount)
+
+// GET next flashcard for review
+router.get('/review-session', getNextReviewCard)
+
+// POST review rating for a flashcard
+router.post('/review/:id', reviewFlashcard)
+
 // GET a single flashcard
 router.get('/:id', getFlashcard)
 
 // POST a new flashcard
 router.post('/', createFlashcard)
 
-// DELETE a new flashcard
+// DELETE a flashcard
 router.delete('/:id', deleteFlashcard)
 
-// UPDATE a new flashcard
+// UPDATE a flashcard
 router.patch('/:id', updateFlashcard)
 
 module.exports = router

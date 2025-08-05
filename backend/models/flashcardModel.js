@@ -14,6 +14,27 @@ const flashcardSchema = new Schema({
     user_id: {
         type: String,
         required: true
+    },
+    // SRS (Spaced Repetition System) fields
+    interval: {
+        type: Number,
+        default: 1 // Days until next review
+    },
+    easeFactor: {
+        type: Number,
+        default: 2.5 // SM-2 algorithm ease factor
+    },
+    repetitions: {
+        type: Number,
+        default: 0 // Number of successful reviews
+    },
+    dueDate: {
+        type: Date,
+        default: Date.now // Next review date
+    },
+    lastReviewed: {
+        type: Date,
+        default: null // Track when last reviewed
     }
 }, { timestamps: true })
 
