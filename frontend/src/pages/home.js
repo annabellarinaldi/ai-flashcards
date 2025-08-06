@@ -1,3 +1,4 @@
+// frontend/src/pages/home.js - Updated with Document Upload
 import { useEffect, useState } from "react";
 import { useFlashcardsContext } from "../hooks/useFlashcardsContext"
 import { useAuthContext } from '../hooks/useAuthContexts'
@@ -7,12 +8,18 @@ import FlashcardDetails from '../components/FlashcardDetails'
 import FlashcardForm from '../components/FlashcardForm'
 import ReviewDashboard from '../components/ReviewDashboard'
 import ReviewSession from '../components/ReviewSession'
+import DocumentUpload from '../components/DocumentUpload'
+import FlashcardEditor from '../components/FlashcardEditor'
 
 const Home = () => {
     const {flashcards, dispatch} = useFlashcardsContext()
     const {user} = useAuthContext()
-    const [currentView, setCurrentView] = useState('dashboard') // 'dashboard', 'review', 'manage'
+    const [currentView, setCurrentView] = useState('dashboard') // 'dashboard', 'review', 'manage', 'upload'
     const [sessionComplete, setSessionComplete] = useState(false)
+    
+    // Document upload states
+    const [generatedFlashcards, setGeneratedFlashcards] = useState(null)
+    const [showEditor, setShowEditor] = useState(false)
 
     useEffect(() => {
         const fetchFlashcards = async () => {
@@ -41,12 +48,49 @@ const Home = () => {
     const handleSessionComplete = (stats) => {
         setSessionComplete(true)
         setCurrentView('dashboard')
-        // Could add a completion modal here with stats
         console.log('Session completed:', stats)
     }
 
     const handleViewChange = (view) => {
         setCurrentView(view)
+        // Reset document upload states when switching views
+        if (view !== 'upload') {
+            setGeneratedFlashcards(null)
+            setShowEditor(false)
+        }
+        // Reset session complete when switching away from dashboard
+        if (view !== 'dashboard') {
+            setSessionComplete(false)
+        }
+    }
+
+    // Document upload handlers
+    const handleFlashcardsGenerated = (result) => {
+        console.log('Flashcards generated:', result)
+        setGeneratedFlashcards(result)
+        setShowEditor(true)
+    }
+
+    const handleSaveComplete = (result) => {
+        console.log('Flashcards saved:', result)
+        
+        // Add new flashcards to the context
+        if (result.flashcards && result.flashcards.length > 0) {
+            result.flashcards.forEach(flashcard => {
+                dispatch({type: 'CREATE_FLASHCARD', payload: flashcard})
+            })
+        }
+        
+        // Show success message and switch to manage view
+        alert(`Successfully saved ${result.count} flashcards! 🎉`)
+        setGeneratedFlashcards(null)
+        setShowEditor(false)
+        setCurrentView('manage')
+    }
+
+    const handleCancelEditor = () => {
+        setShowEditor(false)
+        setGeneratedFlashcards(null)
     }
 
     return (
@@ -58,6 +102,12 @@ const Home = () => {
                     onClick={() => handleViewChange('dashboard')}
                 >
                     📚 Study
+                </button>
+                <button 
+                    className={`nav-btn ${currentView === 'upload' ? 'active' : ''}`}
+                    onClick={() => handleViewChange('upload')}
+                >
+                    🤖 AI Generate
                 </button>
                 <button 
                     className={`nav-btn ${currentView === 'manage' ? 'active' : ''}`}
@@ -84,6 +134,20 @@ const Home = () => {
                 {currentView === 'review' && (
                     <div className="review-view">
                         <ReviewSession onSessionComplete={handleSessionComplete} />
+                    </div>
+                )}
+
+                {currentView === 'upload' && (
+                    <div className="upload-view">
+                        {!showEditor ? (
+                            <DocumentUpload onFlashcardsGenerated={handleFlashcardsGenerated} />
+                        ) : (
+                            <FlashcardEditor 
+                                generatedData={generatedFlashcards}
+                                onSaveComplete={handleSaveComplete}
+                                onCancel={handleCancelEditor}
+                            />
+                        )}
                     </div>
                 )}
 
