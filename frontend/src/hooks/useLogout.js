@@ -1,8 +1,8 @@
 import { useAuthContext  } from './useAuthContexts'
-import { useFlashcardsContext  } from './useFlashcardsContexts'
+import { useFlashcardsContext  } from './useFlashcardsContext'
 export const useLogout = () => {
     const { dispatch } = useAuthContext()
-    const { dispatch: flashcardsDispatch } = useFlaschardsContext()
+    const { dispatch: flashcardsDispatch } = useFlashcardsContext()
 
     const logout = () => {
         // remove user from storage

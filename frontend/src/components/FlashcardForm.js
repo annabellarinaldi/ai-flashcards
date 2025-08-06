@@ -4,7 +4,7 @@ import {useAuthContext} from '../hooks/useAuthContexts'
 
 const FlashcardForm = () => {
     const { dispatch } = useFlashcardsContext()
-    const { user } = useAuthContext
+    const { user } = useAuthContext()
 
     const [term, setTerm] = useState('')
     const [definition, setDefinition] = useState('')
@@ -26,7 +26,7 @@ const FlashcardForm = () => {
             body: JSON.stringify(flashcard),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ${user.token}'
+                'Authorization': `Bearer ${user.token}`
             }
         })
         const json = await response.json()

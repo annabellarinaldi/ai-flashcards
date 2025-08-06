@@ -14,18 +14,20 @@ const Navbar = () => {
         <header>
             <div className="container">
                 <Link to="/">
-                <h1>Testudo</h1>
+                    <h1>🐢 Testudo</h1>
                 </Link>
                 <nav>
-                    {user && (<div>
-                        <span>(user.email)</span>
-                        <button onclick={handleClick}>Log out</button>
-                    </div>
+                    {user && (
+                        <div>
+                            <span>{user.email}</span>
+                            <button onClick={handleClick}>Log out</button>
+                        </div>
                     )}
-                    {!user && (<div>
-                      <Link to="/login">Login</Link>
-                      <Link to="/signup">Signup</Link>    
-                    </div>
+                    {!user && (
+                        <div>
+                            <Link to="/login">Login</Link>
+                            <Link to="/signup">Signup</Link>    
+                        </div>
                     )}
                 </nav>
             </div>
