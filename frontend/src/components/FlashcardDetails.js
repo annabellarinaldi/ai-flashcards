@@ -2,6 +2,7 @@ import { useFlashcardsContext } from "../hooks/useFlashcardsContext"
 //date fns
 import { formatDistanceToNow } from "date-fns"
 import { useAuthContext} from "../hooks/useAuthContexts"
+import API_URL from '../config/api'
 
 const FlashcardDetails = ({ flashcard}) => {
     const { dispatch } = useFlashcardsContext()
@@ -11,7 +12,7 @@ const FlashcardDetails = ({ flashcard}) => {
         if (!user){
             return
         }
-        const response = await fetch('/api/flashcards/' + flashcard._id, {
+        const response = await fetch(`${API_URL}/api/flashcards/` + flashcard._id, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${user.token}`

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useFlashcardsContext } from "../hooks/useFlashcardsContext"
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 //components
 import FlashcardDetails from '../components/FlashcardDetails'
@@ -23,7 +24,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchFlashcards = async () => {
-            const response = await fetch('/api/flashcards', {
+            const response = await fetch(`${API_URL}/api/flashcards`, {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }

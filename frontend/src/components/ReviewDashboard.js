@@ -1,6 +1,7 @@
 // frontend/src/components/ReviewDashboard.js - Complete Fixed Version
 import { useState, useEffect } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const ReviewDashboard = ({ onStartReview }) => {
     const { user } = useAuthContext()
@@ -15,7 +16,7 @@ const ReviewDashboard = ({ onStartReview }) => {
 
             try {
                 setLoading(true)
-                const response = await fetch('/api/flashcards/due-count', {
+                const response = await fetch(`${API_URL}/api/flashcards/due-count`, {
                     headers: {
                         'Authorization': `Bearer ${user.token}`
                     }

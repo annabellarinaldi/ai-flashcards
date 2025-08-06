@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
 import ReviewCard from './ReviewCard'
 import TypedReviewCard from './TypedReviewCard'
+import API_URL from '../config/api'
 
 const ReviewSession = ({ onSessionComplete }) => {
     const { user } = useAuthContext()
@@ -25,7 +26,7 @@ const ReviewSession = ({ onSessionComplete }) => {
             setLoading(true)
             setError(null)
             
-            const response = await fetch('/api/flashcards/review-session', {
+            const response = await fetch(`${API_URL}/api/flashcards/review-session`, {
                 headers: {
                     'Authorization': `Bearer ${user.token}`
                 }

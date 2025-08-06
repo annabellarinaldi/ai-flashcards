@@ -1,6 +1,7 @@
 // frontend/src/components/TypedReviewCard.js - Fixed version
 import { useState, useRef, useEffect } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
     const { user } = useAuthContext()
@@ -33,7 +34,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         try {
             setIsSubmitting(true)
             
-            const response = await fetch(`/api/flashcards/typed-review/${flashcard._id}`, {
+            const response = await fetch(`${API_URL}/api/flashcards/typed-review/${flashcard._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         try {
             setIsSubmitting(true)
             
-            const response = await fetch(`/api/flashcards/override-quality/${flashcard._id}`, {
+            const response = await fetch(`${API_URL}/api/flashcards/override-quality/${flashcard._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

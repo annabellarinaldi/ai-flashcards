@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const ReviewCard = ({ flashcard, onReviewComplete, onError }) => {
     const { user } = useAuthContext()
@@ -17,7 +18,7 @@ const ReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         try {
             setIsSubmitting(true)
             
-            const response = await fetch(`/api/flashcards/review/${flashcard._id}`, {
+            const response = await fetch(`${API_URL}/api/flashcards/review/${flashcard._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 // frontend/src/components/DocumentUpload.js
 import { useState } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const DocumentUpload = ({ onFlashcardsGenerated }) => {
     const { user } = useAuthContext()
@@ -64,7 +65,7 @@ const DocumentUpload = ({ onFlashcardsGenerated }) => {
             const formData = new FormData()
             formData.append('document', file)
 
-            const response = await fetch('/api/documents/upload', {
+            const response = await fetch(`${API_URL}/api/documents/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${user.token}`

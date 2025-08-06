@@ -1,6 +1,7 @@
 // frontend/src/components/FlashcardEditor.js
 import { useState } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const FlashcardEditor = ({ generatedData, onSaveComplete, onCancel }) => {
     const { user } = useAuthContext()
@@ -41,7 +42,7 @@ const FlashcardEditor = ({ generatedData, onSaveComplete, onCancel }) => {
             setSaving(true)
             setError(null)
 
-            const response = await fetch('/api/documents/save-flashcards', {
+            const response = await fetch(`${API_URL}/api/documents/save-flashcards`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

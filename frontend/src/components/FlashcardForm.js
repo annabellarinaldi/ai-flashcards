@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useFlashcardsContext } from "../hooks/useFlashcardsContext"
 import {useAuthContext} from '../hooks/useAuthContexts'
+import API_URL from '../config/api'
 
 const FlashcardForm = () => {
     const { dispatch } = useFlashcardsContext()
@@ -21,7 +22,7 @@ const FlashcardForm = () => {
 
         const flashcard = {term, definition}
 
-        const response = await fetch('/api/flashcards', {
+        const response = await fetch(`${API_URL}/api/flashcards`, {
             method: 'POST',
             body: JSON.stringify(flashcard),
             headers: {
