@@ -163,6 +163,112 @@ const reviewFlashcard = async (req, res) => {
     }
 }
 
+// submit typed answer for review
+const submitTypedReview = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { userAnswer } = req.body
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ error: 'Invalid flashcard ID' })
+        }
+
+        if (userAnswer === undefined || userAnswer === null) {
+            return res.status(400).json({ 
+                error: 'Answer is required' 
+            })
+        }
+
+        const flashcard = await Flashcard.findById(id)
+        if (!flashcard) {
+            return res.status(404).json({ error: 'Flashcard not found' })
+        }
+
+        // Check if answer is correct
+        const isCorrect = flashcard.isAnswerCorrect(userAnswer)
+        
+        // Update performance tracking
+        flashcard.totalReviews += 1
+        if (isCorrect) {
+            flashcard.correctAnswers += 1
+        }
+        
+        await flashcard.save()
+
+        // Auto-determine quality based on correctness
+        let quality = isCorrect ? 2 : 0
+
+        // Update SRS scheduling
+        const updatedFlashcard = await updateFlashcardSRS(id, quality)
+        
+        // Get next card for the session
+        const user_id = req.user._id
+        const remainingCards = await getDueFlashcards(user_id)
+        
+        // Filter out the card we just reviewed to avoid immediate repetition
+        const nextCards = remainingCards.filter(card => card._id.toString() !== id)
+        
+        // Return detailed feedback
+        const correctAnswer = flashcard.reviewType === 'recognition' ? flashcard.definition : flashcard.term
+        
+        res.status(200).json({
+            isCorrect,
+            userAnswer: userAnswer.trim(),
+            correctAnswer,
+            quality, // The auto-assigned quality
+            updatedFlashcard,
+            remaining: nextCards.length,
+            nextCard: nextCards.length > 0 ? nextCards[0] : null,
+            completed: nextCards.length === 0,
+            // Additional feedback
+            feedback: {
+                accuracy: updatedFlashcard.getAccuracy(),
+                totalReviews: updatedFlashcard.totalReviews,
+                correctAnswers: updatedFlashcard.correctAnswers
+            }
+        })
+    } catch (error) {
+        console.error('Typed review error:', error)
+        res.status(400).json({ error: error.message })
+    }
+}
+
+// NEW: Allow manual quality override after seeing result
+const overrideQuality = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { quality } = req.body // 0=Again, 1=Hard, 2=Good, 3=Easy
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ error: 'Invalid flashcard ID' })
+        }
+
+        if (quality === undefined || quality < 0 || quality > 3) {
+            return res.status(400).json({ 
+                error: 'Quality must be between 0 and 3' 
+            })
+        }
+
+        // Update SRS scheduling with new quality
+        const updatedFlashcard = await updateFlashcardSRS(id, quality)
+        
+        // Get next card for the session
+        const user_id = req.user._id
+        const remainingCards = await getDueFlashcards(user_id)
+        
+        res.status(200).json({
+            message: 'Quality updated successfully',
+            updatedFlashcard,
+            remaining: remainingCards.length,
+            nextCard: remainingCards.length > 0 ? remainingCards[0] : null,
+            completed: remainingCards.length === 0
+        })
+    } catch (error) {
+        console.error('Quality override error:', error)
+        res.status(400).json({ error: error.message })
+    }
+}
+
 module.exports = {
     getFlashcards,
     getFlashcard,
@@ -171,5 +277,7 @@ module.exports = {
     updateFlashcard,
     getDueFlashcardsCount,
     getNextReviewCard,
-    reviewFlashcard
+    reviewFlashcard,
+    submitTypedReview,
+    overrideQuality
 }

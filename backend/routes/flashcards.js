@@ -7,7 +7,9 @@ const {
     updateFlashcard,
     getDueFlashcardsCount,
     getNextReviewCard,
-    reviewFlashcard
+    reviewFlashcard,
+    submitTypedReview,
+    overrideQuality
 } = require('../controllers/flashcardController')
 const requireAuth = require('../middleware/requireAuth')
 
@@ -39,5 +41,11 @@ router.delete('/:id', deleteFlashcard)
 
 // UPDATE a flashcard
 router.patch('/:id', updateFlashcard)
+
+// submit typed review
+router.post('/typed-review/:id', submitTypedReview)
+
+//override quality using typed review
+router.post('/override-quality/:id', overrideQuality)
 
 module.exports = router

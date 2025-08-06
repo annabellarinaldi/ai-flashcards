@@ -1,19 +1,23 @@
-// frontend/src/components/ReviewSession.js - Complete Fixed Version
+// frontend/src/components/ReviewSession.js - Truly fixed version
 import { useState, useEffect, useCallback } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
 import ReviewCard from './ReviewCard'
+import TypedReviewCard from './TypedReviewCard'
 
 const ReviewSession = ({ onSessionComplete }) => {
     const { user } = useAuthContext()
     const [currentCard, setCurrentCard] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [reviewMode, setReviewMode] = useState('typed') // 'typed' or 'traditional'
     const [sessionStats, setSessionStats] = useState({
         totalReviewed: 0,
-        remaining: 0
+        remaining: 0,
+        correctAnswers: 0,
+        incorrectAnswers: 0
     })
 
-    // Use useCallback to avoid useEffect dependency warning
+    // Simple fetch function without sessionStats dependency
     const fetchNextCard = useCallback(async () => {
         if (!user) return
 
@@ -31,49 +35,72 @@ const ReviewSession = ({ onSessionComplete }) => {
 
             if (response.ok) {
                 if (json.completed) {
-                    // No more cards to review
-                    onSessionComplete(sessionStats)
+                    setCurrentCard(null)
+                    return { completed: true }
                 } else {
                     setCurrentCard(json.flashcard)
                     setSessionStats(prev => ({
                         ...prev,
                         remaining: json.remaining
                     }))
+                    return { completed: false, card: json.flashcard }
                 }
             } else {
                 setError(json.error || 'Failed to fetch next card')
+                return { error: true }
             }
         } catch (error) {
             setError('Network error occurred')
+            return { error: true }
         } finally {
             setLoading(false)
         }
-    }, [user, onSessionComplete])
+    }, [user])
 
-    // Fetch the first card when session starts
+    // Initial card fetch - ONLY depends on user
     useEffect(() => {
         fetchNextCard()
     }, [fetchNextCard])
 
-    const handleReviewComplete = (reviewResult) => {
+    const handleReviewComplete = async (reviewResult) => {
+        console.log('handleReviewComplete called with:', reviewResult)
+        
         // Update session stats
-        setSessionStats(prev => ({
-            totalReviewed: prev.totalReviewed + 1,
-            remaining: reviewResult.remaining
-        }))
+        const wasCorrect = reviewResult.isCorrect !== undefined ? reviewResult.isCorrect : true
+        
+        setSessionStats(prev => {
+            const newStats = {
+                totalReviewed: prev.totalReviewed + 1,
+                remaining: reviewResult.remaining || 0,
+                correctAnswers: prev.correctAnswers + (wasCorrect ? 1 : 0),
+                incorrectAnswers: prev.incorrectAnswers + (wasCorrect ? 0 : 1)
+            }
+            
+            // Check if session should complete
+            if (reviewResult.completed || reviewResult.remaining === 0) {
+                // Use setTimeout to avoid state update during render
+                setTimeout(() => {
+                    onSessionComplete(newStats)
+                }, 0)
+            }
+            
+            return newStats
+        })
 
-        // Check if session is complete
-        if (reviewResult.completed) {
-            onSessionComplete({
-                totalReviewed: sessionStats.totalReviewed + 1,
-                remaining: 0
-            })
-        } else {
-            // Load next card
+        // Load next card if available
+        if (!reviewResult.completed && reviewResult.remaining > 0) {
             if (reviewResult.nextCard) {
+                console.log('Loading next card:', reviewResult.nextCard.term)
                 setCurrentCard(reviewResult.nextCard)
             } else {
-                fetchNextCard()
+                // Fetch next card if none provided
+                const result = await fetchNextCard()
+                if (result?.completed) {
+                    // Session completed during fetch
+                    setTimeout(() => {
+                        onSessionComplete(sessionStats)
+                    }, 0)
+                }
             }
         }
     }
@@ -84,6 +111,10 @@ const ReviewSession = ({ onSessionComplete }) => {
 
     const handleEndSession = () => {
         onSessionComplete(sessionStats)
+    }
+
+    const toggleReviewMode = () => {
+        setReviewMode(prev => prev === 'typed' ? 'traditional' : 'typed')
     }
 
     if (loading) {
@@ -139,20 +170,45 @@ const ReviewSession = ({ onSessionComplete }) => {
                     <span className="remaining-count">
                         Remaining: {sessionStats.remaining}
                     </span>
+                    {reviewMode === 'typed' && (
+                        <span className="accuracy-count">
+                            Accuracy: {sessionStats.totalReviewed > 0 ? 
+                                Math.round((sessionStats.correctAnswers / sessionStats.totalReviewed) * 100) : 0}%
+                        </span>
+                    )}
                 </div>
-                <button 
-                    className="end-session-btn secondary"
-                    onClick={handleEndSession}
-                >
-                    End Session
-                </button>
+
+                <div className="session-controls">
+                    <button 
+                        className="mode-toggle-btn"
+                        onClick={toggleReviewMode}
+                        title={`Switch to ${reviewMode === 'typed' ? 'traditional' : 'typed'} mode`}
+                    >
+                        {reviewMode === 'typed' ? '⌨️ Typed' : '🎯 Traditional'}
+                    </button>
+                    
+                    <button 
+                        className="end-session-btn secondary"
+                        onClick={handleEndSession}
+                    >
+                        End Session
+                    </button>
+                </div>
             </div>
 
-            <ReviewCard
-                flashcard={currentCard}
-                onReviewComplete={handleReviewComplete}
-                onError={handleError}
-            />
+            {reviewMode === 'typed' ? (
+                <TypedReviewCard
+                    flashcard={currentCard}
+                    onReviewComplete={handleReviewComplete}
+                    onError={handleError}
+                />
+            ) : (
+                <ReviewCard
+                    flashcard={currentCard}
+                    onReviewComplete={handleReviewComplete}
+                    onError={handleError}
+                />
+            )}
         </div>
     )
 }

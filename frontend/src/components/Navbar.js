@@ -1,3 +1,4 @@
+// frontend/src/components/Navbar.js - Improved spacing
 import { Link } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
 import { useAuthContext } from '../hooks/useAuthContexts'
@@ -18,13 +19,15 @@ const Navbar = () => {
                 </Link>
                 <nav>
                     {user && (
-                        <div>
-                            <span>{user.email}</span>
-                            <button onClick={handleClick}>Log out</button>
+                        <div className="user-section">
+                            <span className="user-email">{user.email}</span>
+                            <button className="logout-btn" onClick={handleClick}>
+                                Log out
+                            </button>
                         </div>
                     )}
                     {!user && (
-                        <div>
+                        <div className="auth-links">
                             <Link to="/login">Login</Link>
                             <Link to="/signup">Signup</Link>    
                         </div>
