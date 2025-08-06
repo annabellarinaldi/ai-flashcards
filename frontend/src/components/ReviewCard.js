@@ -7,6 +7,11 @@ const ReviewCard = ({ flashcard, onReviewComplete, onError }) => {
     const [showAnswer, setShowAnswer] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    useEffect(() => {
+        setShowAnswer(false)
+        setIsSubmitting(false)
+    }, [flashcard._id])
+
     const handleShowAnswer = () => {
         setShowAnswer(true)
     }
