@@ -47,11 +47,32 @@ const Signup = () => {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
+    // Password validation - much stricter
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else {
+      const password = formData.password;
+      const passwordErrors = [];
+      
+      if (password.length < 8) {
+        passwordErrors.push('at least 8 characters');
+      }
+      if (!/[A-Z]/.test(password)) {
+        passwordErrors.push('one uppercase letter');
+      }
+      if (!/[a-z]/.test(password)) {
+        passwordErrors.push('one lowercase letter');
+      }
+      if (!/[0-9]/.test(password)) {
+        passwordErrors.push('one number');
+      }
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\?]/.test(password)) {
+        passwordErrors.push('one special character (!@#$%^&* etc.)');
+      }
+      
+      if (passwordErrors.length > 0) {
+        newErrors.password = `Password must contain ${passwordErrors.join(', ')}`;
+      }
     }
 
     // Confirm password validation
@@ -76,7 +97,7 @@ const Signup = () => {
     setErrors({});
 
     try {
-      const response = await fetch('/api/user/signup', {
+      const response = await fetch('https://ai-flashcards-tivc.onrender.com/api/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +175,7 @@ const Signup = () => {
         value={formData.password}
         onChange={handleChange}
         className={errors.password ? 'error' : ''}
-        placeholder="At least 6 characters"
+        placeholder="At least 8 chars, 1 uppercase, 1 number, 1 special char"
         autoComplete="new-password"
       />
       {errors.password && (
