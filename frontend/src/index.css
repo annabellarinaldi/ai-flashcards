@@ -2086,3 +2086,228 @@ form.login h3 {
     padding: 15px 12px;
   }
 }
+
+/* Email Verification Page Styles - Add to your index.css */
+
+.email-verification-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.verification-container {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 60px 40px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-hover);
+  border: 1px solid var(--border);
+}
+
+.verification-container.success {
+  border-top: 4px solid var(--success);
+}
+
+.verification-container.error {
+  border-top: 4px solid var(--error);
+}
+
+.verification-icon {
+  font-size: 4em;
+  margin-bottom: 25px;
+  animation: pulse 2s infinite;
+}
+
+.verification-icon.success {
+  color: var(--success);
+  animation: bounce 0.6s ease-in-out;
+}
+
+.verification-icon.error {
+  color: var(--error);
+  animation: shake 0.5s ease-in-out;
+}
+
+.verification-container h3 {
+  color: var(--primary);
+  margin-bottom: 25px;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border: 2px solid var(--success);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin: 25px 0;
+  color: #155724;
+}
+
+.success-message p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #f8d7da, #f1c2c7);
+  border: 2px solid var(--error);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin: 25px 0;
+  color: #721c24;
+}
+
+.error-message p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.verification-description {
+  color: #666;
+  margin: 25px 0;
+  line-height: 1.6;
+  font-size: 1.05em;
+}
+
+.verification-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 1.1em;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.secondary-btn {
+  background: var(--info);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 1.1em;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.secondary-btn:hover {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.redirect-notice {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 25px;
+  font-style: italic;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .verification-container {
+    padding: 40px 25px;
+    margin: 20px;
+  }
+  
+  .verification-icon {
+    font-size: 3em;
+  }
+  
+  .verification-container h3 {
+    font-size: 1.5em;
+  }
+  
+  .verification-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .primary-btn,
+  .secondary-btn {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .verification-container {
+    padding: 30px 20px;
+  }
+  
+  .verification-icon {
+    font-size: 2.5em;
+  }
+  
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+}

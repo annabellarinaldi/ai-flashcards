@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import API_URL from '../config/api';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,7 +102,7 @@ const Signup = () => {
     setErrors({});
 
     try {
-      const response = await fetch('https://ai-flashcards-tivc.onrender.com/api/user/signup', {
+      const response = await fetch(`${API_URL}/api/user/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,6 +140,30 @@ const Signup = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/api/user/resend-verification`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email: userEmail })
+      });
+
+      const json = await response.json();
+
+      if (response.ok) {
+        alert('New verification email sent! Please check your inbox.');
+      } else {
+        alert('Failed to resend verification email. Please try again.');
+      }
+    } catch (error) {
+      console.error('Resend verification error:', error);
+      alert('Network error occurred while resending verification email');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Show success message if signup completed
   if (signupSuccess) {
     return (
@@ -169,34 +196,59 @@ const Signup = () => {
               Didn't receive the email? Check your spam folder or
             </p>
             
-            <button 
-              onClick={() => {
-                setSignupSuccess(false);
-                setFormData(prev => ({ ...prev, email: userEmail }));
-              }}
-              style={{
-                background: 'var(--info)',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                marginRight: '10px'
-              }}
-            >
-              Try Different Email
-            </button>
-            
-            <a 
-              href="/login" 
-              style={{ 
-                color: 'var(--primary)', 
-                textDecoration: 'none',
-                fontWeight: '500'
-              }}
-            >
-              Already verified? Log in
-            </a>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button 
+                onClick={handleResendVerification}
+                disabled={isLoading}
+                style={{
+                  background: 'var(--info)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: '500'
+                }}
+              >
+                {isLoading ? 'Sending...' : 'Resend Email'}
+              </button>
+              
+              <button 
+                onClick={() => {
+                  setSignupSuccess(false);
+                  setFormData(prev => ({ ...prev, email: userEmail }));
+                }}
+                style={{
+                  background: 'var(--warning)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: '500'
+                }}
+              >
+                Try Different Email
+              </button>
+              
+              <button 
+                onClick={() => navigate('/login')}
+                style={{ 
+                  background: 'var(--primary)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontWeight: '500'
+                }}
+              >
+                Already verified? Log in
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -217,6 +269,7 @@ const Signup = () => {
         className={errors.username ? 'error' : ''}
         placeholder="Choose a username"
         autoComplete="username"
+        disabled={isLoading}
       />
       {errors.username && (
         <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
@@ -234,6 +287,7 @@ const Signup = () => {
         className={errors.email ? 'error' : ''}
         placeholder="your@email.com"
         autoComplete="email"
+        disabled={isLoading}
       />
       {errors.email && (
         <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
@@ -251,6 +305,7 @@ const Signup = () => {
         className={errors.password ? 'error' : ''}
         placeholder="At least 8 chars, 1 uppercase, 1 number, 1 special char"
         autoComplete="new-password"
+        disabled={isLoading}
       />
       {errors.password && (
         <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
@@ -268,6 +323,7 @@ const Signup = () => {
         className={errors.confirmPassword ? 'error' : ''}
         placeholder="Confirm your password"
         autoComplete="new-password"
+        disabled={isLoading}
       />
       {errors.confirmPassword && (
         <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
@@ -287,9 +343,20 @@ const Signup = () => {
 
       <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
         Already have an account?{' '}
-        <a href="/login" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/login')}
+          style={{ 
+            color: 'var(--primary)', 
+            background: 'none',
+            border: 'none',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            fontFamily: 'inherit'
+          }}
+        >
           Sign in
-        </a>
+        </button>
       </p>
     </form>
   );

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import API_URL from '../config/api';
 
 const EmailVerification = () => {
-  // Get token from URL
-  const token = window.location.pathname.split('/verify/')[1];
+  // Get token from URL parameters using React Router
+  const { token } = useParams();
+  const navigate = useNavigate();
   const [status, setStatus] = useState('verifying'); // 'verifying', 'success', 'error'
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +20,8 @@ const EmailVerification = () => {
       }
 
       try {
-        const response = await fetch(`https://ai-flashcards-tivc.onrender.com/api/user/verify/${token}`, {
+        console.log('Verifying token:', token);
+        const response = await fetch(`${API_URL}/api/user/verify/${token}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -25,6 +29,7 @@ const EmailVerification = () => {
         });
 
         const data = await response.json();
+        console.log('Verification response:', data);
 
         if (response.ok) {
           setStatus('success');
@@ -32,7 +37,7 @@ const EmailVerification = () => {
           
           // Redirect to login after 3 seconds
           setTimeout(() => {
-            window.location.href = '/login';
+            navigate('/login');
           }, 3000);
         } else {
           setStatus('error');
@@ -48,26 +53,28 @@ const EmailVerification = () => {
     };
 
     verifyEmail();
-  }, [token]);
+  }, [token, navigate]);
 
   const handleGoToLogin = () => {
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   const handleResendEmail = () => {
-    // For now, just redirect to signup
-    window.location.href = '/signup';
+    navigate('/signup');
   };
 
   if (isLoading) {
     return (
-      <div className="signup">
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4em', marginBottom: '20px' }}>⏳</div>
+      <div className="email-verification-page">
+        <div className="verification-container">
+          <div className="verification-icon">⏳</div>
           <h3>Verifying Your Email...</h3>
-          <p style={{ color: '#666', marginTop: '20px' }}>
+          <p className="verification-description">
             Please wait while we verify your email address.
           </p>
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+          </div>
         </div>
       </div>
     );
@@ -75,59 +82,29 @@ const EmailVerification = () => {
 
   if (status === 'success') {
     return (
-      <div className="signup">
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4em', marginBottom: '20px' }}>✅</div>
+      <div className="email-verification-page">
+        <div className="verification-container success">
+          <div className="verification-icon success">✅</div>
           <h3>Email Verified Successfully!</h3>
           
-          <div style={{ 
-            background: 'var(--primary-light)', 
-            border: '2px solid var(--primary)',
-            borderRadius: 'var(--border-radius)',
-            padding: '20px',
-            margin: '30px 0'
-          }}>
-            <p style={{ 
-              color: 'var(--primary-dark)', 
-              margin: '0',
-              fontSize: '1.1em',
-              fontWeight: '500'
-            }}>
-              {message}
-            </p>
+          <div className="success-message">
+            <p>{message}</p>
           </div>
           
-          <p style={{ color: '#666', marginBottom: '30px' }}>
-            Your account is now active! You can log in and start studying.
+          <p className="verification-description">
+            Your account is now active! You can log in and start studying with flashcards.
           </p>
           
-          <div>
+          <div className="verification-actions">
             <button 
               onClick={handleGoToLogin}
-              style={{
-                background: 'linear-gradient(45deg, var(--primary), var(--primary-dark))',
-                color: 'white',
-                border: 'none',
-                padding: '15px 30px',
-                borderRadius: 'var(--border-radius)',
-                cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: '600',
-                fontSize: '1.1em',
-                transition: 'var(--transition)',
-                boxShadow: 'var(--shadow)'
-              }}
+              className="primary-btn"
             >
               Continue to Login
             </button>
           </div>
           
-          <p style={{ 
-            fontSize: '0.9em', 
-            color: '#666', 
-            marginTop: '20px',
-            fontStyle: 'italic'
-          }}>
+          <p className="redirect-notice">
             Redirecting to login in 3 seconds...
           </p>
         </div>
@@ -137,62 +114,30 @@ const EmailVerification = () => {
 
   if (status === 'error') {
     return (
-      <div className="signup">
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4em', marginBottom: '20px' }}>❌</div>
+      <div className="email-verification-page">
+        <div className="verification-container error">
+          <div className="verification-icon error">❌</div>
           <h3>Verification Failed</h3>
           
-          <div style={{ 
-            background: '#ffebee',
-            border: '2px solid var(--error)',
-            borderRadius: 'var(--border-radius)',
-            padding: '20px',
-            margin: '30px 0'
-          }}>
-            <p style={{ 
-              color: 'var(--error)', 
-              margin: '0',
-              fontSize: '1.1em'
-            }}>
-              {message}
-            </p>
+          <div className="error-message">
+            <p>{message}</p>
           </div>
           
-          <p style={{ color: '#666', marginBottom: '30px' }}>
-            This verification link may be expired or invalid.
+          <p className="verification-description">
+            This verification link may be expired or invalid. You can try logging in anyway or request a new verification email.
           </p>
           
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="verification-actions">
             <button 
               onClick={handleGoToLogin}
-              style={{
-                background: 'var(--primary)',
-                color: 'white',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: 'var(--border-radius)',
-                cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: '500',
-                transition: 'var(--transition)'
-              }}
+              className="primary-btn"
             >
               Try Login Anyway
             </button>
             
             <button 
               onClick={handleResendEmail}
-              style={{
-                background: 'var(--info)',
-                color: 'white',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: 'var(--border-radius)',
-                cursor: 'pointer',
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: '500',
-                transition: 'var(--transition)'
-              }}
+              className="secondary-btn"
             >
               Request New Verification
             </button>
@@ -204,5 +149,3 @@ const EmailVerification = () => {
 
   return null;
 };
-
-export default EmailVerification;
