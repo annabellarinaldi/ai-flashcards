@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../config/api';
 
@@ -8,11 +8,35 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showResendVerification, setShowResendVerification] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
+
+    // Check for URL parameters when component mounts
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const verified = urlParams.get('verified');
+        const error = urlParams.get('error');
+
+        if (verified === 'true') {
+            setSuccessMessage('✅ Email verified successfully! You can now log in.');
+            // Clean up URL
+            window.history.replaceState({}, document.title, '/login');
+        } else if (error) {
+            const errorMessages = {
+                'invalid_token': 'Invalid verification link. Please try logging in or request a new verification email.',
+                'expired_token': 'Verification link has expired. Please request a new verification email.',
+                'server_error': 'Server error during verification. Please try logging in or contact support.'
+            };
+            setError(errorMessages[error] || 'Verification failed. Please try logging in.');
+            // Clean up URL
+            window.history.replaceState({}, document.title, '/login');
+        }
+    }, []);
 
     const handleSubmit = async () => {
         setIsLoading(true);
         setError(null);
+        setSuccessMessage('');
         setShowResendVerification(false);
 
         try {
@@ -62,7 +86,7 @@ const Login = () => {
 
             if (response.ok) {
                 setError(null);
-                alert('Verification email sent! Please check your inbox.');
+                setSuccessMessage('📧 Verification email sent! Please check your inbox.');
                 setShowResendVerification(false);
             } else {
                 setError(json.error || 'Failed to resend verification email');
@@ -78,6 +102,21 @@ const Login = () => {
     return (
         <form className='login' onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
             <h3>Welcome Back</h3>
+
+            {/* Success Message */}
+            {successMessage && (
+                <div style={{
+                    padding: '15px',
+                    background: 'linear-gradient(135deg, #d4edda, #c3e6cb)',
+                    border: '2px solid var(--success)',
+                    color: '#155724',
+                    borderRadius: 'var(--border-radius)',
+                    margin: '20px 0',
+                    fontWeight: '500'
+                }}>
+                    {successMessage}
+                </div>
+            )}
 
             <label>Email or Username</label>
             <input
