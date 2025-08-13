@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSignup } from '../hooks/useSignup';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +9,6 @@ const Signup = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const { signup, error: hookError, isLoading: hookIsLoading } = useSignup();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,116 +65,138 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
     if (!validateForm()) {
       return;
     }
 
+    setIsLoading(true);
+    setErrors({});
+
     try {
-      await signup(formData.username, formData.email, formData.password);
+      const response = await fetch('/api/user/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save the user to local storage
+        localStorage.setItem('user', JSON.stringify(data));
+        
+        // Redirect to home page
+        window.location.href = '/';
+      } else {
+        // Server error
+        setErrors({ submit: data.error });
+      }
     } catch (error) {
       console.error('Signup error:', error);
-      setErrors({ submit: 'An error occurred during signup' });
+      setErrors({ submit: 'Network error. Please try again.' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="pages">
-      <div className="signup">
-        <h3>Create Account</h3>
-        
-        {/* Username Field */}
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          className={errors.username ? 'error' : ''}
-          placeholder="Choose a username"
-          autoComplete="username"
-        />
-        {errors.username && (
-          <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
-            {errors.username}
-          </div>
-        )}
+    <form className="signup" onSubmit={handleSubmit}>
+      <h3>Create Account</h3>
+      
+      <label htmlFor="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        className={errors.username ? 'error' : ''}
+        placeholder="Choose a username"
+        autoComplete="username"
+      />
+      {errors.username && (
+        <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
+          {errors.username}
+        </div>
+      )}
 
-        {/* Email Field */}
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className={errors.email ? 'error' : ''}
-          placeholder="your@email.com"
-          autoComplete="email"
-        />
-        {errors.email && (
-          <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
-            {errors.email}
-          </div>
-        )}
+      <label htmlFor="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        className={errors.email ? 'error' : ''}
+        placeholder="your@email.com"
+        autoComplete="email"
+      />
+      {errors.email && (
+        <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
+          {errors.email}
+        </div>
+      )}
 
-        {/* Password Field */}
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className={errors.password ? 'error' : ''}
-          placeholder="At least 6 characters"
-          autoComplete="new-password"
-        />
-        {errors.password && (
-          <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
-            {errors.password}
-          </div>
-        )}
+      <label htmlFor="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        className={errors.password ? 'error' : ''}
+        placeholder="At least 6 characters"
+        autoComplete="new-password"
+      />
+      {errors.password && (
+        <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
+          {errors.password}
+        </div>
+      )}
 
-        {/* Confirm Password Field */}
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className={errors.confirmPassword ? 'error' : ''}
-          placeholder="Confirm your password"
-          autoComplete="new-password"
-        />
-        {errors.confirmPassword && (
-          <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
-            {errors.confirmPassword}
-          </div>
-        )}
+      <label htmlFor="confirmPassword">Confirm Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        className={errors.confirmPassword ? 'error' : ''}
+        placeholder="Confirm your password"
+        autoComplete="new-password"
+      />
+      {errors.confirmPassword && (
+        <div className="error" style={{ margin: '5px 0 15px 0', padding: '8px 12px', fontSize: '0.9em' }}>
+          {errors.confirmPassword}
+        </div>
+      )}
 
-        {/* Submit Error */}
-        {(errors.submit || hookError) && (
-          <div className="error" style={{ margin: '20px 0' }}>
-            {errors.submit || hookError}
-          </div>
-        )}
+      {errors.submit && (
+        <div className="error" style={{ margin: '20px 0' }}>
+          {errors.submit}
+        </div>
+      )}
 
-        {/* Submit Button */}
-        <button type="button" onClick={handleSubmit} disabled={hookIsLoading}>
-          {hookIsLoading ? 'Creating Account...' : 'Sign Up'}
-        </button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Creating Account...' : 'Sign Up'}
+      </button>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
-          Already have an account?{' '}
-          <a href="/login" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
-            Sign in
-          </a>
-        </p>
-      </div>
-    </div>
+      <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
+        Already have an account?{' '}
+        <a href="/login" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
+          Sign in
+        </a>
+      </p>
+    </form>
   );
 };
 
