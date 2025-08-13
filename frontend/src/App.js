@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContexts';
-// pages & componens
+// pages & components
 import Home from './pages/home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import EmailVerification from './pages/EmailVerification'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -27,7 +28,11 @@ function App() {
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
             />
-            {/* Remove the EmailVerification route completely */}
+            {/* Add the EmailVerification route */}
+            <Route
+              path="/verify/:token"
+              element={<EmailVerification />}
+            />
           </Routes>
         </div>
       </BrowserRouter>
