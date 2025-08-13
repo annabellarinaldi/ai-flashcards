@@ -4,6 +4,7 @@ import { useAuthContext } from './hooks/useAuthContexts';
 import Home from './pages/home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import EmailVerification from './pages/EmailVerification'
 import Navbar from './components/Navbar'
 
 function App() {
@@ -26,6 +27,10 @@ function App() {
             <Route
               path="/signup"
               element={!user ? <Signup /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/verify/:token"
+              element={<EmailVerification />}
             />
           </Routes>
         </div>
