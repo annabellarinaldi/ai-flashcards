@@ -9,6 +9,8 @@ const Signup = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,11 +114,17 @@ const Signup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Save the user to local storage
-        localStorage.setItem('user', JSON.stringify(data));
+        // Success - show verification message instead of logging in
+        setSignupSuccess(true);
+        setUserEmail(data.email);
         
-        // Redirect to home page
-        window.location.href = '/';
+        // Clear form
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
       } else {
         // Server error
         setErrors({ submit: data.error });
@@ -128,6 +136,72 @@ const Signup = () => {
       setIsLoading(false);
     }
   };
+
+  // Show success message if signup completed
+  if (signupSuccess) {
+    return (
+      <div className="signup">
+        <h3>Check Your Email! 📧</h3>
+        
+        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+          <div style={{ fontSize: '4em', marginBottom: '20px' }}>✉️</div>
+          
+          <p style={{ marginBottom: '20px', lineHeight: '1.6' }}>
+            We've sent a verification email to:
+          </p>
+          
+          <p style={{ 
+            fontWeight: 'bold', 
+            color: 'var(--primary)', 
+            marginBottom: '20px',
+            fontSize: '1.1em'
+          }}>
+            {userEmail}
+          </p>
+          
+          <p style={{ marginBottom: '30px', lineHeight: '1.6', color: '#666' }}>
+            Click the verification link in your email to activate your account. 
+            Then you can log in and start studying!
+          </p>
+          
+          <div style={{ borderTop: '1px solid #dee2e6', paddingTop: '20px' }}>
+            <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '15px' }}>
+              Didn't receive the email? Check your spam folder or
+            </p>
+            
+            <button 
+              onClick={() => {
+                setSignupSuccess(false);
+                setFormData(prev => ({ ...prev, email: userEmail }));
+              }}
+              style={{
+                background: 'var(--info)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                marginRight: '10px'
+              }}
+            >
+              Try Different Email
+            </button>
+            
+            <a 
+              href="/login" 
+              style={{ 
+                color: 'var(--primary)', 
+                textDecoration: 'none',
+                fontWeight: '500'
+              }}
+            >
+              Already verified? Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form className="signup" onSubmit={handleSubmit}>
