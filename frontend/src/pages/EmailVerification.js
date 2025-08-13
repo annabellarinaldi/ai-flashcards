@@ -32,29 +32,61 @@ const EmailVerification = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          redirect: 'manual' // Important: Handle redirects manually
         });
 
         console.log('📊 Response status:', response.status);
         console.log('📊 Response ok:', response.ok);
+        console.log('📊 Response type:', response.type);
 
-        const data = await response.json();
-        console.log('📦 Response data:', data);
-
-        if (response.ok) {
-          console.log('✅ Verification successful');
+        // Check if it's a redirect (status 302/301)
+        if (response.type === 'opaqueredirect' || response.status === 302 || response.status === 301) {
+          console.log('✅ Backend redirected - verification successful');
           setStatus('success');
-          setMessage(data.message || 'Email verified successfully!');
+          setMessage('Email verified successfully!');
           
           // Redirect to login after 3 seconds
           console.log('⏰ Setting redirect timer...');
           setTimeout(() => {
             console.log('🔄 Redirecting to login...');
-            window.location.href = '/login';
+            window.location.href = '/login?verified=true';
           }, 3000);
+          setIsLoading(false);
+          return;
+        }
+
+        // If not a redirect, try to parse JSON
+        if (response.ok) {
+          try {
+            const data = await response.json();
+            console.log('📦 Response data:', data);
+            setStatus('success');
+            setMessage(data.message || 'Email verified successfully!');
+            
+            setTimeout(() => {
+              window.location.href = '/login?verified=true';
+            }, 3000);
+          } catch (jsonError) {
+            console.log('✅ Verification successful (no JSON response)');
+            setStatus('success');
+            setMessage('Email verified successfully!');
+            
+            setTimeout(() => {
+              window.location.href = '/login?verified=true';
+            }, 3000);
+          }
         } else {
-          console.log('❌ Verification failed:', data.error);
-          setStatus('error');
-          setMessage(data.error || 'Verification failed');
+          // Try to get error message
+          try {
+            const data = await response.json();
+            console.log('❌ Verification failed:', data.error);
+            setStatus('error');
+            setMessage(data.error || 'Verification failed');
+          } catch (jsonError) {
+            console.log('❌ Verification failed with status:', response.status);
+            setStatus('error');
+            setMessage(`Verification failed (Status: ${response.status})`);
+          }
         }
       } catch (error) {
         console.error('💥 Network error:', error);
@@ -151,8 +183,6 @@ const EmailVerification = () => {
             Your account is now active! You can log in and start studying with flashcards.
           </p>
           
-          {debugInfo}
-          
           <div style={{ margin: '30px 0' }}>
             <button 
               onClick={handleGoToLogin}
@@ -213,8 +243,6 @@ const EmailVerification = () => {
           <p style={{ color: '#666', margin: '25px 0', lineHeight: '1.6' }}>
             This verification link may be expired, invalid, or there might be a connection issue.
           </p>
-          
-          {debugInfo}
           
           <div style={{ 
             display: 'flex', 
