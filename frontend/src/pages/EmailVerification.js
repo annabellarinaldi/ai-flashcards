@@ -2,15 +2,21 @@ import React, { useState, useEffect } from 'react';
 import API_URL from '../config/api';
 
 const EmailVerification = () => {
-  // Get token from URL manually (avoiding useParams for now)
+  // Get token from URL manually
   const token = window.location.pathname.split('/verify/')[1];
-  const [status, setStatus] = useState('verifying'); // 'verifying', 'success', 'error'
+  const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyEmail = async () => {
+      console.log('🔍 Starting email verification...');
+      console.log('🔑 Token:', token);
+      console.log('🌐 API URL:', API_URL);
+      console.log('🌍 Current location:', window.location.href);
+      
       if (!token) {
+        console.log('❌ No token provided');
         setStatus('error');
         setMessage('No verification token provided');
         setIsLoading(false);
@@ -18,33 +24,42 @@ const EmailVerification = () => {
       }
 
       try {
-        console.log('Verifying token:', token);
-        const response = await fetch(`${API_URL}/api/user/verify/${token}`, {
+        const verifyUrl = `${API_URL}/api/user/verify/${token}`;
+        console.log('📡 Making request to:', verifyUrl);
+        
+        const response = await fetch(verifyUrl, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
 
+        console.log('📊 Response status:', response.status);
+        console.log('📊 Response ok:', response.ok);
+
         const data = await response.json();
-        console.log('Verification response:', data);
+        console.log('📦 Response data:', data);
 
         if (response.ok) {
+          console.log('✅ Verification successful');
           setStatus('success');
           setMessage(data.message || 'Email verified successfully!');
           
           // Redirect to login after 3 seconds
+          console.log('⏰ Setting redirect timer...');
           setTimeout(() => {
+            console.log('🔄 Redirecting to login...');
             window.location.href = '/login';
           }, 3000);
         } else {
+          console.log('❌ Verification failed:', data.error);
           setStatus('error');
           setMessage(data.error || 'Verification failed');
         }
       } catch (error) {
-        console.error('Verification error:', error);
+        console.error('💥 Network error:', error);
         setStatus('error');
-        setMessage('Network error occurred. Please try again.');
+        setMessage(`Network error: ${error.message}. Check if backend is running at ${API_URL}`);
       } finally {
         setIsLoading(false);
       }
@@ -54,12 +69,35 @@ const EmailVerification = () => {
   }, [token]);
 
   const handleGoToLogin = () => {
+    console.log('👆 Manual login button clicked');
     window.location.href = '/login';
   };
 
   const handleResendEmail = () => {
+    console.log('👆 Resend email button clicked');
     window.location.href = '/signup';
   };
+
+  // Debug info display
+  const debugInfo = (
+    <div style={{
+      background: '#f8f9fa',
+      border: '1px solid #dee2e6',
+      borderRadius: '8px',
+      padding: '15px',
+      margin: '20px 0',
+      fontSize: '0.85em',
+      color: '#495057',
+      textAlign: 'left'
+    }}>
+      <strong>🔧 Debug Info:</strong><br/>
+      <strong>Token:</strong> {token || 'None'}<br/>
+      <strong>API URL:</strong> {API_URL}<br/>
+      <strong>Status:</strong> {status}<br/>
+      <strong>Current URL:</strong> {window.location.href}<br/>
+      <strong>Expected Backend:</strong> {API_URL}/api/user/verify/{token}
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -70,6 +108,7 @@ const EmailVerification = () => {
           <p style={{ color: '#666', marginTop: '20px', lineHeight: '1.6' }}>
             Please wait while we verify your email address.
           </p>
+          {debugInfo}
           <div style={{ 
             width: '40px', 
             height: '40px', 
@@ -112,6 +151,8 @@ const EmailVerification = () => {
             Your account is now active! You can log in and start studying with flashcards.
           </p>
           
+          {debugInfo}
+          
           <div style={{ margin: '30px 0' }}>
             <button 
               onClick={handleGoToLogin}
@@ -138,7 +179,7 @@ const EmailVerification = () => {
             marginTop: '25px',
             fontStyle: 'italic'
           }}>
-            Redirecting to login in 3 seconds...
+            Auto-redirecting to login in 3 seconds...
           </p>
         </div>
       </div>
@@ -170,8 +211,10 @@ const EmailVerification = () => {
           </div>
           
           <p style={{ color: '#666', margin: '25px 0', lineHeight: '1.6' }}>
-            This verification link may be expired or invalid. You can try logging in anyway or request a new verification email.
+            This verification link may be expired, invalid, or there might be a connection issue.
           </p>
+          
+          {debugInfo}
           
           <div style={{ 
             display: 'flex', 
