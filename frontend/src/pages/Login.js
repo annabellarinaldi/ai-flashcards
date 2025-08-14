@@ -168,48 +168,28 @@ const Login = () => {
                 </div>
             )}
 
-            {/* Password reset and signup links */}
-            <div style={{ 
-                textAlign: 'center', 
-                marginTop: '25px', 
-                paddingTop: '20px', 
-                borderTop: '1px solid #dee2e6' 
-            }}>
-                <p style={{ color: '#666', marginBottom: '15px' }}>
+            {/* Enhanced footer section with better styling */}
+            <div className="login-footer">
+                <div className="forgot-password-section">
                     <button
                         type="button"
                         onClick={() => navigate('/forgot-password')}
-                        style={{ 
-                            color: 'var(--primary)', 
-                            background: 'none',
-                            border: 'none',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                            fontFamily: 'inherit',
-                            fontSize: '0.95em'
-                        }}
+                        className="forgot-password-link"
                     >
                         Forgot your password?
                     </button>
-                </p>
+                </div>
                 
-                <p style={{ color: '#666', margin: '0' }}>
-                    Don't have an account?{' '}
+                <div className="signup-section">
+                    <span className="signup-text">Don't have an account?</span>
                     <button
                         type="button"
                         onClick={() => navigate('/signup')}
-                        style={{ 
-                            color: 'var(--primary)', 
-                            background: 'none',
-                            border: 'none',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                            fontFamily: 'inherit'
-                        }}
+                        className="signup-link"
                     >
                         Sign up
                     </button>
-                </p>
+                </div>
             </div>
         </form>
     );
