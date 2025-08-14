@@ -33,6 +33,15 @@ function App() {
               path="/verify/:token"
               element={<EmailVerification />}
             />
+            {/* Password reset routes */}
+            <Route
+              path="/forgot-password"
+              element={!user ? <ForgotPassword /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/reset-password/:token"
+              element={!user ? <ResetPassword /> : <Navigate to="/" />}
+            />
           </Routes>
         </div>
       </BrowserRouter>

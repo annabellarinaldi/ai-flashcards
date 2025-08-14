@@ -168,23 +168,49 @@ const Login = () => {
                 </div>
             )}
 
-            <p style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
-                Don't have an account?{' '}
-                <button
-                    type="button"
-                    onClick={() => navigate('/signup')}
-                    style={{ 
-                        color: 'var(--primary)', 
-                        background: 'none',
-                        border: 'none',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit'
-                    }}
-                >
-                    Sign up
-                </button>
-            </p>
+            {/* Password reset and signup links */}
+            <div style={{ 
+                textAlign: 'center', 
+                marginTop: '25px', 
+                paddingTop: '20px', 
+                borderTop: '1px solid #dee2e6' 
+            }}>
+                <p style={{ color: '#666', marginBottom: '15px' }}>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/forgot-password')}
+                        style={{ 
+                            color: 'var(--primary)', 
+                            background: 'none',
+                            border: 'none',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit',
+                            fontSize: '0.95em'
+                        }}
+                    >
+                        Forgot your password?
+                    </button>
+                </p>
+                
+                <p style={{ color: '#666', margin: '0' }}>
+                    Don't have an account?{' '}
+                    <button
+                        type="button"
+                        onClick={() => navigate('/signup')}
+                        style={{ 
+                            color: 'var(--primary)', 
+                            background: 'none',
+                            border: 'none',
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit'
+                        }}
+                    >
+                        Sign up
+                    </button>
+                </p>
+            </div>
         </form>
     );
 };
