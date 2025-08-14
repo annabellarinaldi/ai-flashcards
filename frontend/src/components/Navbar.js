@@ -6,17 +6,23 @@ import { useAuthContext } from '../hooks/useAuthContexts'
 const Navbar = () => {
     const { logout } = useLogout()
     const { user } = useAuthContext()
+    const navigate = useNaviagate()
 
     const handleClick = () => {
         logout()
+    }
+
+    const handleLogoClick = () => {
+        navigate('/')
+        window.location.reload()
     }
     
     return (
         <header>
             <div className="container">
-                <Link to="/">
+                <div onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
                     <h1>🐢 Testudo</h1>
-                </Link>
+                </div>
                 <nav>
                     {user && (
                         <div className="user-section">

@@ -3021,3 +3021,20 @@ form.login h3 {
     gap: 15px;
   }
 }
+
+/* User Section - Increased spacing */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* Increased from 20px to 25px */
+}
+
+.user-email {
+  color: var(--dark);
+  font-weight: 500;
+  padding: 8px 15px;
+  background: var(--primary-light);
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  margin-right: 5px; /* Add extra margin for more space */
+}
