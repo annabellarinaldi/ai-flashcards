@@ -82,11 +82,22 @@ const Home = () => {
             })
         }
         
-        // Show success message and switch to manage view
-        alert(`Successfully saved ${result.count} flashcards! 🎉`)
+        // Show success message
+        setSuccessMessageCount(result.count)
+        setShowSuccessMessage(true)
+        
+        // Clean up and redirect to study view
         setGeneratedFlashcards(null)
         setShowEditor(false)
-        setCurrentView('manage')
+        setCurrentView('dashboard')
+        
+        // Smooth scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        
+        // Hide success message after 4 seconds
+        setTimeout(() => {
+            setShowSuccessMessage(false)
+        }, 4000)
     }
 
     const handleCancelEditor = () => {

@@ -2398,3 +2398,37 @@ form.login h3 {
     font-size: 0.9em;
   }
 }
+
+/* Success Message Animation*/
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Success message styling improvements */
+.success-message-container {
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+}
+
+.success-message-container.fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
