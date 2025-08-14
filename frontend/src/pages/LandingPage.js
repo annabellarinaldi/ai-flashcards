@@ -120,11 +120,6 @@ const LandingPage = () => {
                                 <div className="landing-demo-term">Photosynthesis</div>
                                 <div className="landing-demo-definition">The process by which plants convert sunlight into energy</div>
                             </div>
-                            <div className="landing-floating-elements">
-                                <div className="landing-float-element">🧠</div>
-                                <div className="landing-float-element">⚡</div>
-                                <div className="landing-float-element">📚</div>
-                            </div>
                         </div>
                     </div>
                 </div>
