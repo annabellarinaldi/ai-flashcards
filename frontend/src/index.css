@@ -3899,7 +3899,8 @@ form.login h3 {
   line-height: 1.6;
   color: var(--dark);
   overflow-x: hidden;
-  min-height: 100vh; /* Ensure full screen height */
+  min-height: 100vh;
+  width: 100%;
 }
 
 /* Landing Page Navigation - Fixed positioning and spacing */
@@ -3913,7 +3914,7 @@ form.login h3 {
   right: 0;
   z-index: 1000;
   box-shadow: var(--shadow);
-  width: 100vw; /* Full width */
+  width: 100%;
 }
 
 .landing-nav-container {
@@ -3922,7 +3923,7 @@ form.login h3 {
   padding: 15px 30px;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* This pushes logo left, buttons right */
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -3932,13 +3933,13 @@ form.login h3 {
   color: var(--primary);
   letter-spacing: -0.5px;
   cursor: pointer;
-  flex-shrink: 0; /* Prevents logo from shrinking */
+  flex-shrink: 0;
 }
 
 .landing-nav-buttons {
   display: flex;
   gap: 15px;
-  flex-shrink: 0; /* Prevents buttons from shrinking */
+  flex-shrink: 0;
 }
 
 .landing-nav-btn {
@@ -3951,7 +3952,7 @@ form.login h3 {
   font-family: 'Poppins', sans-serif;
   font-size: 0.95em;
   background: none;
-  white-space: nowrap; /* Prevents text wrapping */
+  white-space: nowrap;
 }
 
 .landing-nav-btn.login {
@@ -3979,12 +3980,11 @@ form.login h3 {
 /* Hero Section - Full width background */
 .landing-hero-section {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 120px 30px 80px;
+  padding: 120px 0 80px;
   min-height: 90vh;
   display: flex;
   align-items: center;
-  width: 100vw; /* Full viewport width */
-  margin-left: calc(-50vw + 50%); /* Center the full-width section */
+  width: 100%;
 }
 
 .landing-hero-content {
@@ -4115,7 +4115,7 @@ form.login h3 {
   display: none;
 }
 
-/* Common Section Styles - Full width backgrounds */
+/* Common Section Styles */
 .landing-section-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -4140,12 +4140,11 @@ form.login h3 {
   margin-right: auto;
 }
 
-/* SRS Section - Full width */
+/* SRS Section - Full width background, constrained content */
 .landing-srs-section {
   padding: 100px 0;
   background: white;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
 
 .landing-benefits-grid {
@@ -4260,21 +4259,19 @@ form.login h3 {
   line-height: 1.7;
 }
 
-/* Features Section - Full width with 2x2 grid */
+/* Features Section - Full width background, constrained content */
 .landing-features-section {
   padding: 100px 0;
   background: var(--light);
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
 
 .landing-features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Changed to 2x2 grid */
+  grid-template-columns: repeat(2, 1fr);
   gap: 40px;
-  max-width: 1000px; /* Slightly smaller max width for better 2x2 layout */
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 0 30px;
 }
 
 .feature-card {
@@ -4321,12 +4318,11 @@ form.login h3 {
   font-weight: 500;
 }
 
-/* How It Works Section - Full width */
+/* How It Works Section - Full width background, constrained content */
 .landing-how-it-works-section {
   padding: 100px 0;
   background: white;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
 
 .landing-steps-container {
@@ -4378,14 +4374,13 @@ form.login h3 {
   font-weight: bold;
 }
 
-/* CTA Section - Full width */
+/* CTA Section - Full width background, constrained content */
 .landing-cta-section {
   padding: 100px 0;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   text-align: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
 
 .landing-cta-container {
@@ -4404,6 +4399,73 @@ form.login h3 {
   font-size: 1.2em;
   margin-bottom: 40px;
   opacity: 0.9;
+}
+
+.landing-cta-buttons {
+  margin-bottom: 30px;
+}
+
+.landing-cta-section .landing-cta-primary {
+  background: white;
+  color: var(--primary);
+}
+
+.landing-cta-section .landing-cta-primary:hover {
+  background: var(--light);
+}
+
+.landing-cta-benefits {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.landing-cta-benefits span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Footer - Full width background, constrained content */
+.landing-footer {
+  background: var(--dark);
+  color: white;
+  text-align: center;
+  padding: 40px 0;
+  width: 100%;
+}
+
+.landing-footer p {
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.landing-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.landing-footer-links button,
+.landing-footer-links a {
+  color: white;
+  background: none;
+  border: none;
+  opacity: 0.8;
+  transition: var(--transition);
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  text-decoration: none;
+}
+
+.landing-footer-links button:hover,
+.landing-footer-links a:hover {
+  opacity: 1;
+  color: var(--primary);
 }
 
 .landing-cta-buttons {
@@ -4494,7 +4556,7 @@ form.login h3 {
   }
 
   .landing-hero-section {
-    padding: 100px 20px 60px;
+    padding: 100px 0 60px;
   }
 
   .landing-hero-content {
@@ -4535,8 +4597,8 @@ form.login h3 {
   }
 
   .landing-features-grid {
-    grid-template-columns: 1fr; /* Stack features vertically on mobile */
-    padding: 0 20px;
+    grid-template-columns: 1fr;
+    padding: 0 30px;
   }
 
   .landing-steps-container {
