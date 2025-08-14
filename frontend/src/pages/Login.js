@@ -100,7 +100,7 @@ const Login = () => {
     };
 
     return (
-        <form className='login' onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+        <form className='signup' onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
             <h3>Welcome Back</h3>
 
             {/* Success Message */}

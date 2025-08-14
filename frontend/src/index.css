@@ -2087,7 +2087,7 @@ form.login h3 {
   }
 }
 
-/* Email Verification Page Styles*/
+/* Email Verification Page Styles - Add to your index.css */
 
 .email-verification-page {
   display: flex;
@@ -2312,9 +2312,7 @@ form.login h3 {
   }
 }
 
-/* Enhanced Login Page Styling - Add this to your index.css */
-
-/* Login Footer Styling */
+/* Login Footer Styling - applies to both login and signup forms */
 .login-footer {
   margin-top: 30px;
   padding-top: 25px;
@@ -2388,142 +2386,8 @@ form.login h3 {
   transform: translateY(-1px);
 }
 
-/* Enhanced form styling for login */
-form.login {
-  background: white;
-  border-radius: var(--border-radius);
-  padding: 40px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  border: 1px solid #f0f2f5;
-  max-width: 420px;
-  margin: 40px auto;
-  position: relative;
-  overflow: hidden;
-}
-
-form.login::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-}
-
-form.login h3 {
-  text-align: center;
-  color: var(--dark);
-  font-size: 2em;
-  font-weight: 700;
-  margin-bottom: 35px;
-  position: relative;
-}
-
-form.login h3:after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-  border-radius: 2px;
-}
-
-/* Enhanced input styling */
-form.login input {
-  background: #f8f9fb;
-  border: 2px solid #e1e5e9;
-  border-radius: 10px;
-  padding: 16px 18px;
-  font-size: 1em;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
-}
-
-form.login input:focus {
-  background: white;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(26, 172, 131, 0.1);
-  transform: translateY(-1px);
-}
-
-form.login input::placeholder {
-  color: #a8b2bd;
-  font-weight: 400;
-}
-
-/* Enhanced button styling */
-form.login button[type="submit"] {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 16px 24px;
-  font-size: 1.1em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(26, 172, 131, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-form.login button[type="submit"]:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(26, 172, 131, 0.4);
-}
-
-form.login button[type="submit"]:active {
-  transform: translateY(0);
-}
-
-form.login button[type="submit"]:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 2px 8px rgba(26, 172, 131, 0.2);
-}
-
-/* Loading animation */
-form.login button[type="submit"]:disabled:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 15px;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: translateY(-50%) rotate(0deg); }
-  100% { transform: translateY(-50%) rotate(360deg); }
-}
-
-/* Enhanced label styling */
-form.login label {
-  display: block;
-  color: var(--dark);
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 0.95em;
-  letter-spacing: 0.5px;
-}
-
-/* Mobile responsive improvements */
+/* Mobile responsive improvements for footer */
 @media (max-width: 480px) {
-  form.login {
-    margin: 20px auto;
-    padding: 30px 25px;
-  }
-  
   .signup-section {
     flex-direction: column;
     gap: 5px;
