@@ -4,6 +4,7 @@ import { useAuthContext } from './hooks/useAuthContexts';
 import Home from './pages/home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import LandingPage from './pages/LandingPage'
 import EmailVerification from './pages/EmailVerification'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
@@ -15,12 +16,16 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-      <Navbar />
+      {user && <Navbar />}
         <div className="pages">
           <Routes>
             <Route
               path="/"
-              element={user ? <Home /> : <Navigate to="/login" />}
+              element={user ? <Home /> : <LandingPage />}
+            />
+            <Route
+              path="/app"
+              element={user ? <Home /> : <Navigate to="/" />}
             />
             <Route
               path="/login"
