@@ -13,8 +13,7 @@ const Navbar = () => {
     }
 
     const handleLogoClick = () => {
-        navigate('/')
-        window.location.reload()
+        window.location.href = '/'
     }
     
     return (
