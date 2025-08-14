@@ -21,6 +21,8 @@ const Home = () => {
     // Document upload states
     const [generatedFlashcards, setGeneratedFlashcards] = useState(null)
     const [showEditor, setShowEditor] = useState(false)
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+    const [successMessageCount, setSuccessMessageCount] = useState(0)
 
     useEffect(() => {
         const fetchFlashcards = async () => {
@@ -62,6 +64,7 @@ const Home = () => {
         // Reset session complete when switching away from dashboard
         if (view !== 'dashboard') {
             setSessionComplete(false)
+            setShowSuccessMessage(false) // Hide success message when switching views
         }
     }
 
@@ -133,6 +136,29 @@ const Home = () => {
             <div className="main-content">
                 {currentView === 'dashboard' && (
                     <div className="dashboard-view">
+                        {/* Success message for saved flashcards */}
+                        {showSuccessMessage && (
+                            <div style={{
+                                background: 'linear-gradient(135deg, #d4edda, #c3e6cb)',
+                                border: '2px solid var(--success)',
+                                borderRadius: 'var(--border-radius)',
+                                padding: '20px',
+                                margin: '0 0 30px 0',
+                                color: '#155724',
+                                textAlign: 'center',
+                                boxShadow: 'var(--shadow)',
+                                animation: 'slideDown 0.3s ease-out'
+                            }}>
+                                <div style={{ fontSize: '1.5em', marginBottom: '8px' }}>🎉</div>
+                                <div style={{ fontWeight: '600', fontSize: '1.1em' }}>
+                                    Successfully saved {successMessageCount} flashcards!
+                                </div>
+                                <div style={{ fontSize: '0.9em', marginTop: '5px', opacity: 0.8 }}>
+                                    Ready to start studying!
+                                </div>
+                            </div>
+                        )}
+                        
                         <ReviewDashboard onStartReview={handleStartReview} />
                         {sessionComplete && (
                             <div className="session-complete-message">
