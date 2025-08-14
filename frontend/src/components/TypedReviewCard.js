@@ -1,4 +1,4 @@
-// frontend/src/components/TypedReviewCard.js - Updated with AI scoring
+// frontend/src/components/TypedReviewCard.js - Final Simplified Version
 import { useState, useRef, useEffect } from 'react'
 import { useAuthContext } from '../hooks/useAuthContexts'
 import API_URL from '../config/api'
@@ -29,6 +29,23 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
             }
         }, 100)
     }, [flashcard._id])
+
+    // Add keyboard listener for continuing when result is shown
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (showResult && !showManualOverride && !isSubmitting && !hasCompleted) {
+                // Any key except specific ones will continue
+                if (!['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) {
+                    handleContinue()
+                }
+            }
+        }
+
+        if (showResult && !showManualOverride) {
+            document.addEventListener('keydown', handleKeyPress)
+            return () => document.removeEventListener('keydown', handleKeyPress)
+        }
+    }, [showResult, showManualOverride, isSubmitting, hasCompleted])
 
     const handleSubmitAnswer = async () => {
         if (!user || isSubmitting || !userAnswer.trim() || hasCompleted) return
@@ -64,7 +81,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         }
     }
 
-    const handleKeyPress = (e) => {
+    const handleKeyPressInput = (e) => {
         if (e.key === 'Enter' && !showResult && !isSubmitting) {
             e.preventDefault()
             handleSubmitAnswer()
@@ -112,10 +129,6 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         }
     }
 
-    const handleShowManualOverride = () => {
-        setShowManualOverride(true)
-    }
-
     const getResultMessage = () => {
         if (!reviewResult?.aiScore) return ''
         
@@ -129,6 +142,19 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         return qualityLabels[reviewResult.aiScore.quality] || 'Scored'
     }
 
+    const getScoreText = () => {
+        if (!reviewResult?.aiScore) return ''
+        
+        const scoreTexts = {
+            0: 'Again - Needs immediate review',
+            1: 'Hard - Partially correct',  
+            2: 'Good - Mostly correct',
+            3: 'Easy - Perfect understanding'
+        }
+        
+        return scoreTexts[reviewResult.aiScore.quality] || 'Scored'
+    }
+
     const getResultClass = () => {
         if (!reviewResult?.aiScore) return ''
         const quality = reviewResult.aiScore.quality
@@ -136,14 +162,6 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
         if (quality >= 2) return 'result-correct'
         if (quality >= 1) return 'result-partial'
         return 'result-incorrect'
-    }
-
-    const getConfidenceColor = () => {
-        if (!reviewResult?.aiScore) return '#666'
-        const confidence = reviewResult.aiScore.confidence
-        if (confidence >= 0.9) return '#28a745'
-        if (confidence >= 0.7) return '#ffc107'
-        return '#fd7e14'
     }
 
     // Determine what to ask based on review type
@@ -184,7 +202,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
                                 type="text"
                                 value={userAnswer}
                                 onChange={(e) => setUserAnswer(e.target.value)}
-                                onKeyPress={handleKeyPress}
+                                onKeyPress={handleKeyPressInput}
                                 placeholder="Type your answer here..."
                                 disabled={isSubmitting}
                                 className="answer-input"
@@ -211,43 +229,18 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
                         </div>
                     </div>
                 ) : (
-                    // Result phase
+                    // Result phase - simplified
                     <div className="result-phase">
                         <div className={`result-header ${getResultClass()}`}>
                             <div className="ai-score-display">
                                 <div className="result-message">{getResultMessage()}</div>
                                 {reviewResult.aiScore && (
-                                    <div className="ai-score-details">
-                                        <div className="score-badge">
-                                            AI Score: {reviewResult.aiScore.quality}/3
-                                        </div>
-                                        <div 
-                                            className="confidence-indicator"
-                                            style={{ color: getConfidenceColor() }}
-                                        >
-                                            Confidence: {Math.round(reviewResult.aiScore.confidence * 100)}%
-                                        </div>
+                                    <div className="ai-score-badge">
+                                        AI Score: {getScoreText()}
                                     </div>
                                 )}
                             </div>
                         </div>
-
-                        {reviewResult.aiScore && (
-                            <div className="ai-reasoning">
-                                <div className="reasoning-header">
-                                    <span className="ai-icon">🤖</span>
-                                    <span>AI Assessment:</span>
-                                </div>
-                                <div className="reasoning-text">
-                                    {reviewResult.aiScore.reasoning}
-                                </div>
-                                {!reviewResult.aiScore.aiScored && (
-                                    <div className="fallback-notice">
-                                        <small>⚠️ AI scoring unavailable - used backup method</small>
-                                    </div>
-                                )}
-                            </div>
-                        )}
 
                         <div className="answer-comparison">
                             <div className="user-answer">
@@ -265,46 +258,26 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
                             </div>
                         </div>
 
-                        {reviewResult.feedback && (
-                            <div className="performance-stats">
-                                <div className="stat">
-                                    <span className="stat-label">Accuracy:</span>
-                                    <span className="stat-value">{reviewResult.feedback.accuracy}%</span>
-                                </div>
-                                <div className="stat">
-                                    <span className="stat-label">Total Reviews:</span>
-                                    <span className="stat-value">{reviewResult.feedback.totalReviews}</span>
-                                </div>
-                            </div>
-                        )}
-
                         <div className="result-actions">
                             {!showManualOverride ? (
-                                <div className="ai-score-actions">
-                                    <div className="score-satisfaction">
-                                        <p>Does this AI score seem accurate to you?</p>
-                                        <div className="satisfaction-buttons">
-                                            <button 
-                                                className="agree-btn"
-                                                onClick={handleContinue}
-                                                disabled={isSubmitting || hasCompleted}
-                                            >
-                                                ✅ Yes, continue
-                                            </button>
-                                            <button 
-                                                className="disagree-btn"
-                                                onClick={handleShowManualOverride}
-                                                disabled={isSubmitting || hasCompleted}
-                                            >
-                                                🤔 No, let me score it
-                                            </button>
-                                        </div>
+                                <div className="simple-actions">
+                                    <div className="continue-instruction">
+                                        <p><strong>Press any key to continue</strong> if this score seems right</p>
+                                        <p>Or click below to manually grade this response:</p>
                                     </div>
+                                    
+                                    <button 
+                                        className="manual-grade-btn"
+                                        onClick={() => setShowManualOverride(true)}
+                                        disabled={isSubmitting || hasCompleted}
+                                    >
+                                        🎯 Manual Grade
+                                    </button>
                                 </div>
                             ) : (
                                 <div className="manual-override">
                                     <div className="override-header">
-                                        <p><strong>Manual Override:</strong> How would you score this?</p>
+                                        <p><strong>How would you score this response?</strong></p>
                                     </div>
                                     <div className="quality-buttons-override">
                                         <button 
@@ -345,7 +318,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
                                         onClick={() => setShowManualOverride(false)}
                                         disabled={isSubmitting || hasCompleted}
                                     >
-                                        Cancel Override
+                                        Cancel
                                     </button>
                                 </div>
                             )}
