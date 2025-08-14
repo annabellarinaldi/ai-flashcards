@@ -355,7 +355,7 @@ const Signup = () => {
             fontFamily: 'inherit'
           }}
         >
-          Sign in
+          Login
         </button>
       </p>
     </form>
