@@ -3893,14 +3893,17 @@ form.login h3 {
 
 /* Landing Page CSS Fixes - Replace the existing landing page styles in index.css */
 
-/* Landing Page Container */
+/* Landing Page Container - Break out of parent constraints */
 .landing-page {
   font-family: 'Poppins', sans-serif;
   line-height: 1.6;
   color: var(--dark);
   overflow-x: hidden;
   min-height: 100vh;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  position: relative;
 }
 
 /* Landing Page Navigation - Fixed positioning and spacing */
