@@ -1250,9 +1250,80 @@ form.login h3 {
   margin-top: 5px;
 }
 
-/* Replace the existing TypedReviewCard and ReviewCard sections in your index.css with this */
+/* Replace the previous flashcard CSS with this improved version */
 
-/* Review session container - maintain horizontal flashcard */
+/* Session Header - Restore the stats bar */
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px 0;
+  border-bottom: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.session-progress {
+  display: flex;
+  gap: 30px;
+  font-size: 1.1em;
+}
+
+.reviewed-count,
+.remaining-count,
+.accuracy-count {
+  font-weight: 600;
+  color: var(--dark);
+  font-size: 1.1em;
+}
+
+.accuracy-count {
+  color: var(--success);
+}
+
+.session-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mode-toggle-btn {
+  background: var(--info);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 0.95em;
+}
+
+.mode-toggle-btn:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+.end-session-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  transition: var(--transition);
+  font-size: 0.95em;
+}
+
+.end-session-btn:hover {
+  background: #545b62;
+  transform: translateY(-1px);
+}
+
+/* Review session container */
 .review-session.active {
   max-width: 1000px;
   margin: 0 auto;
@@ -1274,13 +1345,12 @@ form.login h3 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* Fixed dimensions to maintain flashcard shape */
   width: 100%;
   max-width: 900px;
-  height: 500px; /* Fixed height */
-  max-height: 500px; /* Prevent stretching */
+  height: 500px;
+  max-height: 500px;
   margin: 0 auto;
-  flex-shrink: 0; /* Don't allow shrinking */
+  flex-shrink: 0;
 }
 
 .typed-review-card .card-content,
@@ -1290,10 +1360,10 @@ form.login h3 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: hidden; /* Prevent any overflow */
+  overflow: hidden;
 }
 
-/* Question phase - compact spacing */
+/* Question phase */
 .question-phase {
   display: flex;
   flex-direction: column;
@@ -1325,7 +1395,7 @@ form.login h3 {
   border-radius: var(--border-radius);
   border: 2px solid var(--primary);
   word-wrap: break-word;
-  max-height: 120px; /* Limit height */
+  max-height: 120px;
   overflow: hidden;
 }
 
@@ -1355,6 +1425,12 @@ form.login h3 {
   margin-bottom: 12px;
 }
 
+.answer-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(26, 172, 131, 0.1);
+}
+
 .submit-answer-btn {
   background: linear-gradient(45deg, var(--primary), var(--primary-dark));
   color: white;
@@ -1373,6 +1449,11 @@ form.login h3 {
   margin: 0 auto;
 }
 
+.submit-answer-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
 .input-hint {
   color: #666;
   font-style: italic;
@@ -1385,7 +1466,7 @@ form.login h3 {
   flex-shrink: 0;
 }
 
-/* Result phase - compact layout to fit in fixed height */
+/* Result phase - improved layout and sizing */
 .result-phase {
   display: flex;
   flex-direction: column;
@@ -1394,45 +1475,67 @@ form.login h3 {
   overflow: hidden;
 }
 
+/* Single AI Score Header with color-coded background */
 .result-header {
   text-align: center;
-  padding: 15px 12px;
+  padding: 20px 15px;
   border-radius: var(--border-radius);
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   flex-shrink: 0;
 }
 
+.result-header.result-again {
+  background: linear-gradient(135deg, #f8d7da, #f1c2c7);
+  border: 2px solid var(--error);
+  color: #721c24;
+}
+
+.result-header.result-hard {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 2px solid var(--warning);
+  color: #856404;
+}
+
+.result-header.result-good {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border: 2px solid var(--success);
+  color: #155724;
+}
+
+.result-header.result-easy {
+  background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+  border: 2px solid var(--info);
+  color: #0c5460;
+}
+
+.ai-score-display {
+  text-align: center;
+}
+
 .result-message {
-  font-size: 1.2em;
+  font-size: 1.4em;
   font-weight: 600;
   margin-bottom: 8px;
 }
 
+/* Remove duplicate AI score badge - only show in header */
 .ai-score-badge {
-  background: linear-gradient(45deg, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 6px 14px;
-  border-radius: 15px;
-  font-weight: 600;
-  font-size: 0.8em;
-  box-shadow: var(--shadow);
-  display: inline-block;
-  margin-top: 6px;
+  display: none;
 }
 
-/* Compact answer comparison */
+/* Larger answer comparison with better text sizing */
 .answer-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 20px;
+  margin-bottom: 20px;
   flex: 1;
   min-height: 0;
 }
 
 .user-answer,
 .correct-answer {
-  padding: 12px;
+  padding: 15px;
   border-radius: var(--border-radius);
   border: 2px solid var(--border);
   display: flex;
@@ -1444,17 +1547,17 @@ form.login h3 {
 .user-answer label,
 .correct-answer label {
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: var(--dark);
-  font-size: 0.9em;
+  font-size: 1em;
   flex-shrink: 0;
 }
 
 .answer-text {
-  font-size: 0.9em;
-  padding: 10px;
+  font-size: 1.1em; /* Increased from 0.9em */
+  padding: 12px;
   border-radius: 6px;
-  line-height: 1.3;
+  line-height: 1.4;
   word-wrap: break-word;
   flex: 1;
   display: flex;
@@ -1464,35 +1567,47 @@ form.login h3 {
   text-overflow: ellipsis;
 }
 
-/* Compact result actions */
+.answer-text.correct {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid var(--success);
+}
+
+.answer-text.incorrect {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid var(--error);
+}
+
+/* Improved result actions */
 .simple-actions {
   text-align: center;
-  padding: 12px;
+  padding: 15px;
   background: #f8f9fa;
   border-radius: var(--border-radius);
   flex-shrink: 0;
 }
 
 .continue-instruction {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .continue-instruction p {
-  margin: 6px 0;
+  margin: 8px 0;
   color: var(--dark);
-  line-height: 1.3;
-  font-size: 0.9em;
+  line-height: 1.4;
+  font-size: 1em; /* Increased from 0.9em */
   font-weight: 400;
 }
 
 .continue-instruction p:first-child {
-  font-size: 0.9em;
+  font-size: 1em;
   color: var(--primary);
   background: linear-gradient(135deg, var(--primary-light), #e8f5f0);
   border: 2px solid var(--primary);
   border-radius: 6px;
-  padding: 8px 12px;
-  margin: 6px 0;
+  padding: 10px 14px;
+  margin: 8px 0;
   font-weight: 500;
 }
 
@@ -1500,49 +1615,54 @@ form.login h3 {
   background: linear-gradient(45deg, var(--warning), #e0a800);
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: var(--border-radius);
   cursor: pointer;
   font-family: "Poppins", sans-serif;
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 1em;
   transition: var(--transition);
   box-shadow: var(--shadow);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   margin: 0 auto;
 }
 
-/* Compact manual override */
+.manual-grade-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Manual override */
 .manual-override {
   background: #f8f9fa;
   border: 2px solid var(--warning);
   border-radius: var(--border-radius);
-  padding: 12px;
+  padding: 15px;
   flex-shrink: 0;
 }
 
 .override-header p {
   text-align: center;
   color: var(--dark);
-  font-size: 0.9em;
-  margin: 0 0 10px 0;
+  font-size: 1em;
+  margin: 0 0 15px 0;
   font-weight: 600;
 }
 
 .quality-buttons-override {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .quality-btn-override {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 6px;
+  padding: 12px 8px;
   border: 2px solid #ddd;
   border-radius: var(--border-radius);
   background: white;
@@ -1552,14 +1672,59 @@ form.login h3 {
   box-shadow: var(--shadow);
 }
 
+.quality-btn-override:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.quality-btn-override.again {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.quality-btn-override.again:hover:not(:disabled) {
+  background: var(--error);
+  color: white;
+}
+
+.quality-btn-override.hard {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.quality-btn-override.hard:hover:not(:disabled) {
+  background: var(--warning);
+  color: white;
+}
+
+.quality-btn-override.good {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.quality-btn-override.good:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+}
+
+.quality-btn-override.easy {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.quality-btn-override.easy:hover:not(:disabled) {
+  background: var(--success);
+  color: white;
+}
+
 .quality-label {
   font-weight: 700;
-  font-size: 0.85em;
-  margin-bottom: 2px;
+  font-size: 0.9em;
+  margin-bottom: 3px;
 }
 
 .quality-desc {
-  font-size: 0.7em;
+  font-size: 0.75em;
   opacity: 0.8;
   text-align: center;
   font-weight: 400;
@@ -1569,7 +1734,7 @@ form.login h3 {
   background: #6c757d;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-family: "Poppins", sans-serif;
@@ -1577,10 +1742,15 @@ form.login h3 {
   transition: var(--transition);
   display: block;
   margin: 0 auto;
-  font-size: 0.8em;
+  font-size: 0.9em;
 }
 
-/* Regular review card - same fixed dimensions */
+.cancel-override-btn:hover:not(:disabled) {
+  background: #545b62;
+  transform: translateY(-1px);
+}
+
+/* Regular review card styles */
 .question-side {
   display: flex;
   flex-direction: column;
@@ -1614,6 +1784,11 @@ form.login h3 {
   font-family: "Poppins", sans-serif;
   transition: var(--transition);
   box-shadow: var(--shadow);
+}
+
+.show-answer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
 }
 
 .answer-side {
@@ -1684,6 +1859,11 @@ form.login h3 {
   box-shadow: var(--shadow);
 }
 
+.quality-btn:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .review-session.active {
@@ -1691,9 +1871,20 @@ form.login h3 {
     height: calc(100vh - 100px);
   }
   
+  .session-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .session-progress {
+    gap: 20px;
+    font-size: 1em;
+  }
+  
   .typed-review-card,
   .review-card {
-    height: 450px; /* Slightly smaller on mobile */
+    height: 450px;
     max-height: 450px;
   }
   
@@ -1715,12 +1906,12 @@ form.login h3 {
   
   .answer-comparison {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 15px;
   }
   
   .quality-buttons-override {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 8px;
   }
   
   .quality-buttons {
