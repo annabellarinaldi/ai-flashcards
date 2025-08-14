@@ -262,8 +262,7 @@ const TypedReviewCard = ({ flashcard, onReviewComplete, onError }) => {
                             {!showManualOverride ? (
                                 <div className="simple-actions">
                                     <div className="continue-instruction">
-                                        <p><strong>Press any key to continue</strong> if this score seems right</p>
-                                        <p>Or click below to manually grade this response:</p>
+                                        <p>Press any key to continue if this score seems right</p>
                                     </div>
                                     
                                     <button 
